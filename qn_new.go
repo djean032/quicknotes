@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"time"
 )
 
@@ -48,7 +49,6 @@ func main() {
 	}
 	defer file.Close()
 
-
 	content := fmt.Sprintf("# %s\n\nCreated: %s\nTags:\n\n---\n\n", title, now.Format(time.RFC3339))
 
 	_, err = file.WriteString(content)
@@ -61,7 +61,13 @@ func main() {
 		editor = "nvim"
 	}
 
-	cmd := exec.Command(editor, fullpath)
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("pwsh.exe", "-Command", editor, fullpath)
+	} else {
+		cmd = exec.Command(editor, fullpath)
+	}
+
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
