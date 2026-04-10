@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -15,12 +16,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	title := ""
+	var title strings.Builder
 	for i := 1; i < len(os.Args); i++ {
 		if i > 1 {
-			title += " "
+			title.WriteString(" ")
 		}
-		title += os.Args[i]
+		title.WriteString(os.Args[i])
 	}
 
 	home, err := os.UserHomeDir()
